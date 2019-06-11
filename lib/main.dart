@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Cek Ongkir dan Resi',
       home: new HomePage(),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(canvasColor: Color(0xff29332F)),
+      theme: ThemeData(canvasColor: Color(0xff29332F),),
     );
   }
 }
