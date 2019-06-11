@@ -1,0 +1,250 @@
+import 'package:cek_ongkir_dan_resi/src/blocs/cityBloc.dart';
+import 'package:cek_ongkir_dan_resi/src/models/cityModel.dart';
+import 'package:flutter/material.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+
+// class Home extends StatefulWidget {
+//   @override
+//   _HomeState createState() => _HomeState();
+// }
+
+// class _HomeState extends State<Home> {
+//   @override
+//   void initState() {
+//     bloc.fetchAllCity();
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     bloc.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text("aaa"),
+//       ),
+//       body: StreamBuilder(
+//         stream: bloc.allTodo,
+//         builder: (context, AsyncSnapshot<City> snapshot) {
+//           if(snapshot.data) {
+//             return buildList(snapshot);
+//           }else if(snapshot.hasError) {
+//             return Text(snapshot.error.toString());
+//           }
+//         },
+//       )
+//     );
+//   }
+//   Widget buildList(AsyncSnapshot<List<City>> snapshot) {
+//     return ListView.builder(
+//       itemCount: snapshot.data.length,
+//       itemBuilder: (BuildContext context, int index) {
+//         return ListTile(
+//           title: Text(snapshot.data[index].),
+//         );
+//       },
+//     )
+//   }
+// }
+
+void main() {
+  runApp(new MaterialApp(
+    title: "Kalkulator Ruang dan Bangun",
+    home: new Home(),
+    theme: new ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    debugShowCheckedModeBanner: false,
+    // routes: <String, WidgetBuilder> {
+    //   '/HalamanUtama': (BuildContext context) => new Home(),
+    //   '/HalamanKubus': (BuildContext context) => new halKubus.NavKubus(),
+    //   '/HalamanBalok': (BuildContext context) => new halBalok.NavBalok(),
+    //   '/HalamanPrismaSegitiga': (BuildContext context) => new halPrismaSegitiga.NavPrismaSegitiga()
+    // }
+  ));
+}
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+        GlobalKey<AutoCompleteTextFieldState<Result>> key = new GlobalKey();
+
+        AutoCompleteTextField searchTextField;
+
+        TextEditingController controller = new TextEditingController();
+
+        _HomeState();
+
+        List<dynamic> _namaKota;
+        String _kotaTerpilih;
+        String _terpilih;
+
+
+  @override
+  void initState(){
+    super.initState();
+    bloc.fetchCity();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    bloc.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Test"),
+      ),
+      body: StreamBuilder<City>(
+        stream: bloc.subject.stream,
+        builder: (context, AsyncSnapshot<City> snapshot) {
+          if (snapshot.hasData) {
+                        return buildList(snapshot);
+
+        //      for (int i = 0; i < snapshot.data.rajaongkir.results.length; i++) {
+        // _namaKota.add(snapshot.data.rajaongkir.results[i].cityName);
+
+        // _kotaTerpilih = snapshot.data.rajaongkir.results[0].cityId;
+        //   if (_namaKota != null) {
+        //   }
+            // return buildList(snapshot);
+          } else {
+            return Text("error");
+          }
+        }
+      ),
+    );
+  }
+
+    Widget buildList(AsyncSnapshot<City> snapshot) {
+      return Container(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  searchTextField = AutoCompleteTextField<Result>(
+                     style: new TextStyle(color: Colors.black, fontSize: 16.0),
+                decoration: new InputDecoration(
+                    suffixIcon: Container(
+                      width: 85.0,
+                      height: 60.0,
+                    ),
+                    contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
+                    filled: true,
+                    hintText: 'Search Player Name',
+                    hintStyle: TextStyle(color: Colors.black)),
+                  itemSubmitted: (item) {
+                  setState(() => searchTextField.textField.controller.text =
+                      item.cityName);
+                },
+                clearOnSubmit: false,
+                key: key,
+                suggestions: snapshot.data.rajaongkir.results,
+                itemBuilder: (context, item) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                     Text(item.cityName,
+                      style: TextStyle(
+                        fontSize: 16.0
+                      ),),
+                      Padding(
+                        padding: EdgeInsets.all(15.0),
+                      ),
+                      Text(item.cityId,
+                      )
+                    ],
+                  );
+                },
+                itemSorter: (a, b) {
+                  return a.cityName.compareTo(b.cityName);
+                },
+                itemFilter: (item, query) {
+                  return item.cityName
+                      .toLowerCase()
+                      .startsWith(query.toLowerCase());
+
+                },
+                  )
+                ],
+              )
+            ],
+          ),
+        )
+      );
+      // String selectedRegion;
+      // return Container(
+      //   child: Center(
+    //       child: DropdownButton(
+    //         // value: snapshot.data.rajaongkir.results[0].cityName,
+    //         items: snapshot.data.rajaongkir.results.map((tes) {
+    //           return DropdownMenuItem<dynamic>(
+    //       child: new Text(tes.cityName),
+    //       value: tes.cityId,
+    //   );
+    // }).toList(),
+    // onChanged: (newVal) {
+    //   setState(() {
+    //     _terpilih = newVal;
+    //   });
+    //   print(_terpilih);
+    // },
+    // value: _terpilih,
+    //       )
+      //   ),
+      // );
+
+      // selectedRegion = snapshot.data.rajaongkir.results[0].cityId;
+      // Result user = snapshot.data.rajaongkir.results[1];
+      // if (user == null) {
+      //   print("bbb");
+      // }
+      // return Container(
+      //   child: Center(
+      //     child: Text(user.cityName),
+      //   ),
+      // );
+    // return ListView.builder(
+    //   itemCount: snapshot.data.rajaongkir.results.length,
+    //   itemBuilder: (BuildContext context, int i) {
+    //     // Results results = data.results[i];
+    //     return ListTile(
+    //       title: Text(snapshot.data.rajaongkir.results[i].cityName)
+    //     );
+    //   },
+    // );
+  //   return Container(
+  //     child: Center(
+  //       child: DropdownButton<String>(
+  //         items: _namaKota.map((data) {
+
+  //         })
+  //       )
+  //     ),
+  //   );
+  // }
+
+  //  DropdownMenuItem _buildDropdownItem(dynamic unit) {
+  //   print("build dropdown items");
+  //   return DropdownMenuItem(
+  //     value: unit.cityName,
+  //     child: Container(
+  //       child: Text(
+  //         unit.cityName,
+  //         softWrap: true,
+  //       ),
+  //     ),
+  //   );
+  }
+}
